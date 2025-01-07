@@ -1,3 +1,18 @@
+# TODO: Add a scoring system
+# TODO: Implement multiple lives and respawning
+# TODO: Add an explosion effect for the asteroids
+# TODO: Add acceleration to the player movement
+# TODO: Make the objects wrap around the screen instead of disappearing
+# TODO: Add a background image
+# TODO: Create different weapon types
+# TODO: Make the asteroids lumpy instead of perfectly round
+# TODO: Make the ship have a triangular hit box instead of a circular one
+# TODO: Add a shield power-up
+# TODO: Add a speed power-up
+# TODO: Add bombs that can be dropped
+
+
+
 import pygame
 from constants import *
 from player import Player, Shot
