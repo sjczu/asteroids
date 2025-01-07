@@ -1,26 +1,62 @@
 import pygame
 from constants import *
-from player import Player
+from player import Player, Shot
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     print(f"Starting asteroids!\nScreen width: {SCREEN_WIDTH}\nScreen height: {SCREEN_HEIGHT}")
+    
     pygame.init()
+    
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    # screen.set_caption("Asteroids")
+    pygame.display.set_caption("Asteroids")
     fpsClock = pygame.time.Clock()
-    dt = 0
+
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    shots = pygame.sprite.Group()
+    
+    Player.containers = (updatable,drawable)
+    
     player = Player(SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
+    
+    Asteroid.containers = (updatable,drawable,asteroids)
+    AsteroidField.containers = (updatable)
+    
+    asteroid_field = AsteroidField()
+    
+    Shot.containers = (updatable,drawable,shots)
+    
     while(True):
+        dt = fpsClock.tick(60)/1000
+        
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-        screen.fill((0,0,0))
-        player.draw(screen)
-        player.update(dt)
-        pygame.display.flip()
-
-        dt = fpsClock.tick(60)/1000
         
+        for object in updatable:
+            object.update(dt)
+        
+        for object in asteroids:
+            if player.check_collision(object):
+                print("Game over!")
+                return
+        for object in asteroids:
+            for bullet in shots:
+                if object.check_collision(bullet):
+                    object.split()
+                    bullet.kill()
+                    break
+            
+        screen.fill((0,0,0))
+        
+        for object in drawable:
+            object.draw(screen)
+        
+        pygame.display.flip()
+    
 
 if __name__ == "__main__":
     main()

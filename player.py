@@ -3,6 +3,8 @@ from circleshape import CircleShape
 from constants import *
 
 class Player(CircleShape):
+    timer = 0
+    
     def __init__(self,x,y):
         super().__init__(x,y,PLAYER_RADIUS)
         self.rotation = 0
@@ -21,10 +23,44 @@ class Player(CircleShape):
     def rotate(self,dt):
         self.rotation += PLAYER_TURN_SPEED * dt
         
+        
     def update(self,dt):
         keys = pygame.key.get_pressed()
+        
+        self.timer -= dt
         
         if keys[pygame.K_a]:
             self.rotate(-dt)
         if keys[pygame.K_d]:
             self.rotate(dt)
+        if keys[pygame.K_w]:
+            self.move(dt)
+        if keys[pygame.K_s]:
+            self.move(-dt)
+        if keys[pygame.K_SPACE]:
+            if self.timer <= 0:
+                self.shoot(dt)
+                self.timer = SHOT_COOLDOWN
+            
+    def move(self,dt):
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        self.position += forward * PLAYER_SPEED * dt
+    
+    def shoot(self,dt):
+        forward = pygame.Vector2(0, 1).rotate(self.rotation)
+        velocity = forward * SHOT_SPEED
+        Shot(self.position.x, self.position.y, velocity)
+        
+        
+class Shot(CircleShape):
+    def __init__(self,x,y,velocity):
+        super().__init__(x,y,SHOT_RADIUS)
+        self.velocity = velocity
+    
+    def draw(self,screen):
+        pygame.draw.circle(screen, ("white"), self.position, self.radius)
+        
+    def update(self,dt):
+        self.position += self.velocity * dt
+        if self.position.x < 0 or self.position.x > SCREEN_WIDTH or self.position.y < 0 or self.position.y > SCREEN_HEIGHT:
+            self.kill()
