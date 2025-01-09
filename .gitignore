@@ -1,2 +1,10 @@
+<<<<<<< HEAD
 venv/
 __pycache__/
+=======
+venv/
+__pycache__/
+classes/__pycache__/
+config/__pycache__/
+audio\retro-8bit-happy-videogame-music.mp3Zone.Identifier
+>>>>>>> bc7eb34 (v1.2a add: more menus, gameover screen, scoring system, change: divide configs, move classes)
