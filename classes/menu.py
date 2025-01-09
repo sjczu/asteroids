@@ -121,8 +121,6 @@ class Menu:
         if selected_option == "BGM Volume":
             pass
         elif selected_option == "Resolution":
-            res_h_options = ["720","1080","1440","2160"]
-            res_w_options = ["1280","1920","2560","3440","3840"]
             res_full_options = ["1280x720", "1920x1080", "2560x1440", "3440x1440", "3840x2160"]
             
             res_dropdown = Dropdown(screen,res_full_options,100,100)
