@@ -4,6 +4,8 @@
 # TODO: Add acceleration to the player movement
 # TODO: (optional) Make the objects wrap around the screen instead of disappearing
 # TODO: (optional) Add a background image
+# TODO: (optional) Add sound effects
+# TODO: (optional) Add BGM
 # TODO: Create different weapon types
 # TODO: Make the asteroids lumpy instead of perfectly round
 # TODO: Make the ship have a triangular hit box instead of a circular one
@@ -61,6 +63,7 @@ def main():
             if player.check_collision(object):
                 print("Game over!")
                 return
+            # pass
         for object in asteroids:
             for bullet in shots:
                 if object.check_collision(bullet):
