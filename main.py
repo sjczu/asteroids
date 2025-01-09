@@ -30,7 +30,7 @@ def main():
     pygame.init()
     
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    pygame.display.set_caption("Asteroids")
+    pygame.display.set_caption(f"Asteroids v{APP_VERSION}")
     fpsClock = pygame.time.Clock()
 
     updatable = pygame.sprite.Group()
