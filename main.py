@@ -1,5 +1,5 @@
 # TODO: Add a scoring system
-# TODO: Implement multiple lives and respawning
+# DONE Implement multiple lives and respawning
 # TODO: Add an explosion effect for the asteroids
 # TODO: Add acceleration to the player movement
 # TODO: (optional) Make the objects wrap around the screen instead of disappearing
@@ -7,8 +7,8 @@
 # TODO: (optional) Add sound effects
 # TODO: (optional) Add BGM
 # TODO: Create different weapon types
-# TODO: Make the asteroids lumpy instead of perfectly round
-# TODO: Make the ship have a triangular hit box instead of a circular one
+# DONE Make the asteroids lumpy instead of perfectly round
+# DONE Make the ship have a triangular hit box instead of a circular one
 # TODO: Add a shield power-up
 # TODO: Add a speed power-up
 # TODO: Add bombs that can be dropped
@@ -19,67 +19,39 @@
 
 
 import pygame
+import sys
 from constants import *
-from player import Player, Shot
-from asteroid import Asteroid
-from asteroidfield import AsteroidField
+# from player import Player, Shot
+# from asteroid import Asteroid
+# from asteroidfield import AsteroidField
+from menu import Menu
 
 def main():
     print(f"Starting asteroids!\nScreen width: {SCREEN_WIDTH}\nScreen height: {SCREEN_HEIGHT}")
-    
     pygame.init()
-    
+    pygame.mixer.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption(f"Asteroids v{APP_VERSION}")
     fpsClock = pygame.time.Clock()
+    pygame.mixer.music.load("audio/retro-8bit-happy-videogame-music.mp3")
+    pygame.mixer.music.play(-1)
+    menu = Menu(screen)
+    while True:
+        selected_option = menu.navigate()
+        if selected_option == "Start":
+            pygame.mixer.music.stop()
+            menu.start_game(screen,fpsClock)
+        elif selected_option == "Customize":
+            menu.customize(screen)
+        elif selected_option == "Options":
+            menu.options_menu(screen)
+        elif selected_option == "Profile":
+            menu.profile(screen)
+        elif selected_option == "Leaderboard":
+            menu.leaderboard(screen)
+        elif selected_option == "Exit":
+            menu.exit()
 
-    updatable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
-    
-    Player.containers = (updatable,drawable)
-    
-    player = Player(SCREEN_WIDTH/2,SCREEN_HEIGHT/2)
-    
-    Asteroid.containers = (updatable,drawable,asteroids)
-    AsteroidField.containers = (updatable)
-    
-    asteroid_field = AsteroidField()
-    
-    Shot.containers = (updatable,drawable,shots)
-    
-    while(True):
-        dt = fpsClock.tick(60)/1000
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return
-        
-        for object in updatable:
-            object.update(dt)
-        
-        for object in asteroids:
-            if player.check_collision(object):
-                if player.lives <= 1:
-                    print("Game over!")
-                    return
-                player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-            # pass
-        for object in asteroids:
-            for bullet in shots:
-                if object.check_collision(bullet):
-                    object.split()
-                    bullet.kill()
-                    break
-            
-        screen.fill((0,0,0))
-        
-        for object in drawable:
-            object.draw(screen)
-        
-        pygame.display.flip()
-    
 
 if __name__ == "__main__":
     main()
