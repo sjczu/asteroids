@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 venv/
 __pycache__/
 =======
@@ -12,3 +13,9 @@ audio\retro-8bit-happy-videogame-music.mp3Zone.Identifier
 =======
 config/__pycache__/
 >>>>>>> fdfa867 (gitignore)
+=======
+venv/
+__pycache__/
+classes/__pycache__/
+config/__pycache__/
+>>>>>>> 5747a4c (v1.2a add: more menus)
