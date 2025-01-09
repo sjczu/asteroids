@@ -61,8 +61,10 @@ def main():
         
         for object in asteroids:
             if player.check_collision(object):
-                print("Game over!")
-                return
+                if player.lives <= 1:
+                    print("Game over!")
+                    return
+                player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
             # pass
         for object in asteroids:
             for bullet in shots:
