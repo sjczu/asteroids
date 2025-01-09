@@ -14,12 +14,11 @@ class Player(TriangleShape):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
         right = pygame.Vector2(0, 1).rotate(self.rotation + 90) * self.base / 2
         a = self.position + forward * self.height
-        b = self.position - forward * self.base - right
-        c = self.position - forward * self.base + right
+        b = self.position - forward * self.height/2 - right
+        c = self.position - forward * self.height/2 + right
         return [a, b, c]
     
     def draw(self,screen):
-        # pygame.draw.polygon(screen, ("white"), self.triangle(), 2)
         pygame.draw.polygon(screen, "white", self.triangle(), 2)
         
     def rotate(self,dt):

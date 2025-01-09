@@ -11,7 +11,7 @@ class TriangleShape(pygame.sprite.Sprite):
         self.velocity = pygame.Vector2(0,0)
         self.height = height
         self.base = base
-        self.area = (self.height*self.base)/2
+        # self.area = (self.height*self.base)/2
         
     def draw(self,screen):
         pass
