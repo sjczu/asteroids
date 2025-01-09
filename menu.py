@@ -58,7 +58,8 @@ class Menu:
 
         while True:
             dt = fpsClock.tick(60) / 1000
-
+            pygame.mixer.music.load("audio/8bit-arcade-mode.mp3")
+            pygame.mixer.music.play(-1)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     return
@@ -69,6 +70,7 @@ class Menu:
             for object in asteroids:
                 if player.check_collision(object):
                     if player.lives <= 1:
+                        pygame.mixer.music.stop()
                         print("Game over!")
                         return
                     object.kill()

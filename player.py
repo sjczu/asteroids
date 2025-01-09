@@ -23,7 +23,7 @@ class Player(TriangleShape):
     def respawn(self,x,y):
         self.rotation = 0
         self.lives -= 1
-        super().__init__(self.x,self.y,PLAYER_SHAPE_HEIGHT,PLAYER_SHAPE_BASE)
+        super().__init__(x,y,PLAYER_SHAPE_HEIGHT,PLAYER_SHAPE_BASE)
         
     def draw(self,screen):
         pygame.draw.polygon(screen, "white", self.triangle(), 2)
