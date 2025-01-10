@@ -1,14 +1,8 @@
 import pygame
-<<<<<<< HEAD:player.py
-from triangleshape import TriangleShape
-from circleshape import CircleShape
-from constants import *
-=======
 from classes.triangleshape import TriangleShape
 from classes.circleshape import CircleShape
 from config.settings import PLAYER_SHAPE_HEIGHT, PLAYER_SHAPE_BASE, PLAYER_BASE_LIVES, PLAYER_BASE_SCORE, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_COOLDOWN, SHOT_SPEED, SCREEN_WIDTH, SCREEN_HEIGHT, SHOT_RADIUS
 from config.stats import *
->>>>>>> bc7eb34 (v1.2a add: more menus, gameover screen, scoring system, change: divide configs, move classes):classes/player.py
 
 class Player(TriangleShape):
     timer = 0
@@ -18,10 +12,7 @@ class Player(TriangleShape):
         self.rotation = 0
         self.lives = PLAYER_BASE_LIVES
         self.score = PLAYER_BASE_SCORE
-<<<<<<< HEAD:player.py
-=======
         self.total_score = PLAYER_TOTAL_SCORE
->>>>>>> bc7eb34 (v1.2a add: more menus, gameover screen, scoring system, change: divide configs, move classes):classes/player.py
     
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -72,12 +63,9 @@ class Player(TriangleShape):
         velocity = forward * SHOT_SPEED
         Shot(self.position.x, self.position.y, velocity)
         
-<<<<<<< HEAD:player.py
-=======
     def add_score(self,other):
         self.score += other.points
         
->>>>>>> bc7eb34 (v1.2a add: more menus, gameover screen, scoring system, change: divide configs, move classes):classes/player.py
         
 class Shot(CircleShape):
     def __init__(self,x,y,velocity):

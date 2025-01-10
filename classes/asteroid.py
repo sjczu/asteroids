@@ -1,11 +1,6 @@
 import pygame
-<<<<<<< HEAD:asteroid.py
-from asteroidshape import AsteroidShape
-from constants import *
-=======
 from classes.asteroidshape import AsteroidShape
 from config.settings import ASTEROID_BASE_SCORE, ASTEROID_MAX_RADIUS, ASTEROID_MIN_RADIUS
->>>>>>> bc7eb34 (v1.2a add: more menus, gameover screen, scoring system, change: divide configs, move classes):classes/asteroid.py
 import random
 import math
 
@@ -14,10 +9,8 @@ class Asteroid(AsteroidShape):
         super().__init__(x,y,radius)
         self.velocity = pygame.Vector2(0,0)
         self.rotation = 0
-<<<<<<< HEAD:asteroid.py
-=======
+
         self.points = ASTEROID_BASE_SCORE * (self.radius / ASTEROID_MAX_RADIUS)
->>>>>>> bc7eb34 (v1.2a add: more menus, gameover screen, scoring system, change: divide configs, move classes):classes/asteroid.py
         
     def draw(self,screen):
         pygame.draw.polygon(screen, "white", [(vertex.x, vertex.y) for vertex in self.vertices], 2)
