@@ -1,12 +1,7 @@
 import pygame
 import random
-<<<<<<< HEAD:asteroidfield.py
-from asteroid import Asteroid
-from constants import *
-=======
 from classes.asteroid import Asteroid
 from config.settings import ASTEROID_MAX_RADIUS, ASTEROID_MIN_RADIUS, ASTEROID_SPAWN_RATE, ASTEROID_KINDS, SCREEN_WIDTH, SCREEN_HEIGHT
->>>>>>> bc7eb34 (v1.2a add: more menus, gameover screen, scoring system, change: divide configs, move classes):classes/asteroidfield.py
 
 
 class AsteroidField(pygame.sprite.Sprite):

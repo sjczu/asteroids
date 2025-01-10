@@ -1,11 +1,7 @@
 import pygame
 import random
 import math
-<<<<<<< HEAD:asteroidshape.py
-from circleshape import CircleShape
-=======
 from classes.circleshape import CircleShape
->>>>>>> bc7eb34 (v1.2a add: more menus, gameover screen, scoring system, change: divide configs, move classes):classes/asteroidshape.py
 
 class AsteroidShape(pygame.sprite.Sprite):
     def __init__(self,x,y,radius):
