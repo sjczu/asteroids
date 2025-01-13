@@ -1,7 +1,7 @@
 import pygame
 from classes.triangleshape import TriangleShape
 from classes.circleshape import CircleShape
-from config.settings import PLAYER_SHAPE_HEIGHT, PLAYER_SHAPE_BASE, PLAYER_BASE_LIVES, PLAYER_BASE_SCORE, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_COOLDOWN, SHOT_SPEED, SCREEN_WIDTH, SCREEN_HEIGHT, SHOT_RADIUS
+from config.settings import PLAYER_SHAPE_HEIGHT, PLAYER_SHAPE_BASE, PLAYER_BASE_LIVES, PLAYER_BASE_SCORE, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_COOLDOWN, SHOT_SPEED, SCREEN_WIDTH, SCREEN_HEIGHT, SHOT_RADIUS, PLAYER_BASE_ACCELERATION
 from config.stats import *
 
 class Player(TriangleShape):
@@ -13,6 +13,7 @@ class Player(TriangleShape):
         self.lives = PLAYER_BASE_LIVES
         self.score = PLAYER_BASE_SCORE
         self.total_score = PLAYER_TOTAL_SCORE
+        self.accelerating = None
     
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -44,9 +45,14 @@ class Player(TriangleShape):
         if keys[pygame.K_d]:
             self.rotate(dt)
         if keys[pygame.K_w]:
-            self.move(dt)
-        if keys[pygame.K_s]:
-            self.move(-dt)
+            self.accelerating = True
+        elif keys[pygame.K_s]:
+            self.accelerating = False
+            # self.move(-dt,self.accelerating)
+        else: 
+            self.accelerating = None
+        
+        self.move(dt,self.accelerating)
         if keys[pygame.K_SPACE]:
             if self.timer <= 0:
                 self.shoot(dt)
@@ -54,9 +60,25 @@ class Player(TriangleShape):
         if keys[pygame.K_q] and keys[pygame.K_LCTRL]:
             pygame.event.post(pygame.event.Event(pygame.QUIT))
             
-    def move(self,dt):
+    def move(self, dt, accelerating):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.position += forward * PLAYER_SPEED * dt
+        backward = -forward
+        if accelerating is True:
+            self.velocity += forward * PLAYER_BASE_ACCELERATION * dt
+            if self.velocity.length() > PLAYER_SPEED:
+                self.velocity.scale_to_length(PLAYER_SPEED)
+        elif accelerating is False:
+            self.velocity += backward * PLAYER_BASE_ACCELERATION * dt # * 0.5?
+            if self.velocity.length() > PLAYER_SPEED:
+                self.velocity.scale_to_length(PLAYER_SPEED)
+        else:
+            friction = PLAYER_BASE_ACCELERATION * dt * 0.5
+            if self.velocity.length() > friction:
+                self.velocity -= self.velocity.normalize() * friction
+            else:
+                self.velocity = pygame.Vector2(0, 0)
+        
+        self.position += self.velocity * dt
     
     def shoot(self,dt):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)

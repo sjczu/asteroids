@@ -1,5 +1,6 @@
 import pygame
 import random
+import logging
 from classes.asteroid import Asteroid
 from config.settings import ASTEROID_MAX_RADIUS, ASTEROID_MIN_RADIUS, ASTEROID_SPAWN_RATE, ASTEROID_KINDS, SCREEN_WIDTH, SCREEN_HEIGHT
 
@@ -35,6 +36,8 @@ class AsteroidField(pygame.sprite.Sprite):
     def spawn(self, radius, position, velocity):
         asteroid = Asteroid(position.x, position.y, radius)
         asteroid.velocity = velocity
+        self.groups()[0].add(asteroid)
+        logging.debug(f"Asteroid spawned at ({position.x},{position.y}) with radius {radius}")
 
     def update(self, dt):
         self.spawn_timer += dt

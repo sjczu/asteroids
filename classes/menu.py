@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+import logging
 from config.settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from config.stats import PLAYER_TOTAL_SCORE
 from classes.player import Player, Shot
@@ -11,6 +12,9 @@ class Menu:
     menu_options = ["Start","Customize","Options","Profile","Leaderboard","Exit"]
     settings_options = ["BGM Volume", "Resolution", "Difficulty","Back"]
     diff_options = ["Easy","Medium","Hard"]
+    volume_options = ["0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    res_full_options = ["1280x720", "1920x1080", "2560x1440", "3440x1440", "3840x2160"]
+    
     def __init__(self,screen,options=None):
         self.screen = screen
         self.options = options if options is not None else Menu.menu_options
@@ -59,58 +63,64 @@ class Menu:
         Shot.containers = (updatable, drawable, shots)
 
         while True:
-            start_time = time.time()
-            dt = fpsClock.tick(60) / 1000
-            
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    return
-
-            update_start = time.time()
-            for object in updatable:
-                object.update(dt)
-            update_end = time.time()
-
-            collision_start = time.time()
-            for object in asteroids:
-                if player.check_collision(object):
-                    if player.lives <= 1:
-                        print("Game over!")
-                        print(f"Updating score...\nOld score: {player.total_score}\nconstants.py score: {PLAYER_TOTAL_SCORE}\nGame score: {player.score}\nNew score: {round(player.total_score) + round(player.score)}\n")
-                        update_file(score=player.score,player=player)
-                        go_menu = GameOver(screen,GameOver.go_options)
-                        selected_option = go_menu.navigate(player)
-                        if selected_option == "Restart":
-                            player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-                        elif selected_option == "Main Menu":    
-                            return
+            try:
+                
+                start_time = time.time()
+                dt = fpsClock.tick(60) / 1000
+                
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
                         return
-                    object.kill()
-                    player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
-            for object in asteroids:
-                for bullet in shots:
-                    if object.check_collision(bullet):
-                        object.split()
-                        bullet.kill()
-                        player.add_score(object)
-                        break
-            collision_end = time.time()
+                update_start = time.time()
+                for object in updatable:
+                    object.update(dt)
+                update_end = time.time()
 
-            render_start = time.time()
+                collision_start = time.time()
+                for object in asteroids:
+                    if player.check_collision(object):
+                        if player.lives <= 1:
+                            logging.info("Game over!")
+                            logging.info(f"Updating score...\nOld score: {player.total_score}\nstats.py score: {PLAYER_TOTAL_SCORE}\nGame score: {player.score}\nNew score: {round(player.total_score) + round(player.score)}\n")
+                            update_file(score=player.score,player=player)
+                            go_menu = GameOver(screen,GameOver.go_options)
+                            selected_option = go_menu.navigate(player)
+                            if selected_option == "Restart":
+                                player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+                            elif selected_option == "Main Menu":    
+                                return
+                            return
+                        object.kill()
+                        player.respawn(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
-            screen.fill((0, 0, 0))
+                for object in asteroids:
+                    for bullet in shots:
+                        if object.check_collision(bullet):
+                            object.split()
+                            bullet.kill()
+                            player.add_score(object)
+                            break
+                collision_end = time.time()
 
-            for object in drawable:
-                object.draw(screen)
+                render_start = time.time()
 
-            draw_ui(screen, font, player)
-            
-            pygame.display.flip()
-            render_end = time.time()
+                screen.fill((0, 0, 0))
 
-            end_time = time.time()
-            print(f"Total Time: {end_time - start_time:.4f}s, Update: {update_end - update_start:.4f}s, Collision: {collision_end - collision_start:.4f}s, Render: {render_end - render_start:.4f}s")
+                for object in drawable:
+                    object.draw(screen)
+
+                draw_ui(screen, font, player)
+                
+                pygame.display.flip()
+                render_end = time.time()
+
+                end_time = time.time()
+                logging.debug(f"Total Time: {end_time - start_time:.4f}s, Update: {update_end - update_start:.4f}s, Collision: {collision_end - collision_start:.4f}s, Render: {render_end - render_start:.4f}s")
+            except Exception as e:
+                logging.error(f"Error in main game loop: {e}")
+                pygame.quit()
+                exit()
                      
     def customize(self,screen):
         pass
@@ -119,11 +129,32 @@ class Menu:
         settings_menu = Menu(screen,Menu.settings_options)
         selected_option = settings_menu.navigate()
         if selected_option == "BGM Volume":
-            pass
+            volume_dropdown = Dropdown(screen, Menu.volume_options, 100, 100)
+
+            while True:
+                screen.fill((0, 0, 0))
+                volume_dropdown.display_menu()
+                pygame.display.flip()
+
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    volume_dropdown.event_handler(event)
+
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                        selected_option = volume_dropdown.get_selected_option()
+                        new_volume = float(selected_option)
+                        logging.info(f"Updating BGM_VOLUME to {new_volume}")
+                        update_file(filepath="config/settings.py", bgm_volume=new_volume)
+                        logging.info(f"BGM_VOLUME updated to {new_volume}")
+                        return
+                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                        return
         elif selected_option == "Resolution":
-            res_full_options = ["1280x720", "1920x1080", "2560x1440", "3440x1440", "3840x2160"]
             
-            res_dropdown = Dropdown(screen,res_full_options,100,100)
+            
+            res_dropdown = Dropdown(screen,Menu.res_full_options,100,100)
             
             while True:
                 screen.fill((0,0,0))
@@ -141,8 +172,13 @@ class Menu:
                         res_w, res_h = map(int, selected_option.split("x"))
                         SCREEN_HEIGHT = res_h
                         SCREEN_WIDTH = res_w
+                        logging.info("Updating resolution...")
                         update_file(filepath="config/settings.py",width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
-                        pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+                        logging.info(f"Resolution updated to {SCREEN_WIDTH}x{SCREEN_HEIGHT}")
+                        try:
+                            pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+                        except Exception as e:
+                            logging.error(f"Error updating resolution {e}")
                         return
                     elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                         return
@@ -152,12 +188,15 @@ class Menu:
             if selected_option == "Easy":
                 ASTEROID_SPAWN_RATE = 2.0
                 update_file(filepath="config/settings.py",spawn_rate=ASTEROID_SPAWN_RATE)
+                logging.info("Difficulty set to Easy")
             elif selected_option == "Medium":
                 ASTEROID_SPAWN_RATE = 1.2
                 update_file(filepath="config/settings.py",spawn_rate=ASTEROID_SPAWN_RATE)
+                logging.info("Difficulty set to Medium")
             elif selected_option == "Hard":
                 ASTEROID_SPAWN_RATE = 0.8
                 update_file(filepath="config/settings.py",spawn_rate=ASTEROID_SPAWN_RATE)
+                logging.info("Difficulty set to Hard")
         elif selected_option == "Back":
             return
     
@@ -244,7 +283,7 @@ def draw_ui(screen,font,player):
         score_text = font.render(f"Score: {round(player.score)}", True, (255,255,255))
         screen.blit(score_text, (10,50))
 
-def update_file(filepath="config/stats.py",width=None, height=None, spawn_rate=None,score=None,player=None):
+def update_file(filepath="config/stats.py",width=None, height=None, spawn_rate=None,score=None,player=None,bgm_volume=None):
         with open(filepath, 'r') as file:
             lines = file.readlines()
 
@@ -259,5 +298,7 @@ def update_file(filepath="config/stats.py",width=None, height=None, spawn_rate=N
                 elif line.startswith("PLAYER_TOTAL_SCORE") and score is not None:
                     new_score = round(player.total_score) + score
                     file.write(f"PLAYER_TOTAL_SCORE = {round(new_score)}\n")
+                elif line.startswith("BGM_VOLUME") and bgm_volume is not None:
+                    file.write(f"BGM_VOLUME = {bgm_volume}\n")
                 else:
                     file.write(line)

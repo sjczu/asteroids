@@ -1,8 +1,9 @@
 import pygame
 from classes.asteroidshape import AsteroidShape
-from config.settings import ASTEROID_BASE_SCORE, ASTEROID_MAX_RADIUS, ASTEROID_MIN_RADIUS
+from config.settings import ASTEROID_BASE_SCORE, ASTEROID_MAX_RADIUS, ASTEROID_MIN_RADIUS, SCREEN_WIDTH, SCREEN_HEIGHT
 import random
 import math
+import logging
 
 class Asteroid(AsteroidShape):
     def __init__(self,x,y,radius):
@@ -20,13 +21,25 @@ class Asteroid(AsteroidShape):
         self.position += self.velocity * dt
         self.rotation += 1
         
-        # Recalculate vertices based on current position and rotation in order to draw the rotating asteroids
         angle_step = 360 / len(self.vertices)
         for i, vertex in enumerate(self.vertices):
             angle = math.radians(angle_step * i + self.rotation)
             distance = self.radius 
             vertex.x = self.position.x + distance * math.cos(angle)
             vertex.y = self.position.y + distance * math.sin(angle)
+        
+        if self.is_in_field() == False:
+            try:
+                self.kill()
+                logging.debug(f"Killed asteroid at ({self.position.x},{self.position.y})")
+            except Exception as e:
+                logging.error(f"Error deleting out-of-field asteroid at ({self.position.x},{self.position.y}): {e}")
+        
+    def is_in_field(self):
+        if self.position.x < -self.radius or self.position.x > SCREEN_WIDTH + self.radius or self.position.y < -self.radius or self.position.y > SCREEN_HEIGHT + self.radius:
+            logging.debug(f"Asteroid at ({self.position.x},{self.position.y}) is out of field")
+            logging.debug("Killing asteroid...")
+            return False
     
     def split(self):
         self.kill()
