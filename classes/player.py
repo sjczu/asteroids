@@ -3,6 +3,7 @@ from classes.triangleshape import TriangleShape
 from classes.circleshape import CircleShape
 from config.settings import PLAYER_SHAPE_HEIGHT, PLAYER_SHAPE_BASE, PLAYER_BASE_LIVES, PLAYER_BASE_SCORE, PLAYER_TURN_SPEED, PLAYER_SPEED, SHOT_COOLDOWN, SHOT_SPEED, SCREEN_WIDTH, SCREEN_HEIGHT, SHOT_RADIUS, PLAYER_BASE_ACCELERATION
 from config.stats import *
+import config.items
 
 class Player(TriangleShape):
     timer = 0
@@ -14,6 +15,9 @@ class Player(TriangleShape):
         self.score = PLAYER_BASE_SCORE
         self.total_score = PLAYER_TOTAL_SCORE
         self.accelerating = None
+        # self.__shield = None
+        # self.__thruster = None
+        # self.__weapon = None
     
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -29,7 +33,13 @@ class Player(TriangleShape):
         super().__init__(x,y,PLAYER_SHAPE_HEIGHT,PLAYER_SHAPE_BASE)
         
     def draw(self,screen):
+        # if self.__shield is None:
         pygame.draw.polygon(screen, "white", self.triangle(), 2)
+        # else:
+        #     pygame.draw.polygon(screen, "white", self.triangle(), 2)
+        #     points = self.triangle()
+        #     points = [point + pygame.Vector2(2, 2) for point in points]
+        #     pygame.draw.polygon(screen, "blue", points, 4)
         
     def rotate(self,dt):
         self.rotation += PLAYER_TURN_SPEED * dt

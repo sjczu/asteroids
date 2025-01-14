@@ -10,9 +10,9 @@ from classes.asteroidfield import AsteroidField
 
 class Menu:
     menu_options = ["Start","Customize","Options","Profile","Leaderboard","Exit"]
-    settings_options = ["BGM Volume", "Resolution", "Difficulty","Back"]
+    settings_options = ["Resolution", "Difficulty","Back"]
     diff_options = ["Easy","Medium","Hard"]
-    volume_options = ["0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
+    # volume_options = ["0.0", "0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9", "1.0"]
     res_full_options = ["1280x720", "1920x1080", "2560x1440", "3440x1440", "3840x2160"]
     
     def __init__(self,screen,options=None):
@@ -128,30 +128,30 @@ class Menu:
     def options_menu(self,screen):
         settings_menu = Menu(screen,Menu.settings_options)
         selected_option = settings_menu.navigate()
-        if selected_option == "BGM Volume":
-            volume_dropdown = Dropdown(screen, Menu.volume_options, 100, 100)
+        # if selected_option == "BGM Volume":
+        #     volume_dropdown = Dropdown(screen, Menu.volume_options, 100, 100)
 
-            while True:
-                screen.fill((0, 0, 0))
-                volume_dropdown.display_menu()
-                pygame.display.flip()
+        #     while True:
+        #         screen.fill((0, 0, 0))
+        #         volume_dropdown.display_menu()
+        #         pygame.display.flip()
 
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-                    volume_dropdown.event_handler(event)
+        #         for event in pygame.event.get():
+        #             if event.type == pygame.QUIT:
+        #                 pygame.quit()
+        #                 sys.exit()
+        #             volume_dropdown.event_handler(event)
 
-                    if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                        selected_option = volume_dropdown.get_selected_option()
-                        new_volume = float(selected_option)
-                        logging.info(f"Updating BGM_VOLUME to {new_volume}")
-                        update_file(filepath="config/settings.py", bgm_volume=new_volume)
-                        logging.info(f"BGM_VOLUME updated to {new_volume}")
-                        return
-                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                        return
-        elif selected_option == "Resolution":
+        #             if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+        #                 selected_option = volume_dropdown.get_selected_option()
+        #                 new_volume = float(selected_option)
+        #                 logging.info(f"Updating BGM_VOLUME to {new_volume}")
+        #                 update_file(filepath="config/settings.py", bgm_volume=new_volume)
+        #                 logging.info(f"BGM_VOLUME updated to {new_volume}")
+        #                 return
+        #             elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+        #                 return
+        if selected_option == "Resolution":
             
             
             res_dropdown = Dropdown(screen,Menu.res_full_options,100,100)
